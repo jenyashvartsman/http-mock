@@ -1,6 +1,13 @@
 export const DEFAULT_PORT = 8080;
 export const DEFAULT_MOCK_DIR = "mocks";
 export const DEFAULT_PREFIX = "";
+export const DEFAULT_DELAY = 0;
 export const APP_ROOT = process.cwd();
 export const RESPONSE_HEADERS = { "Content-Type": "application/json" };
-export const VALID_METHODS: string[] = ["GET", "POST", "PUT", "DELETE", "PATCH"];
+export const VALID_METHODS: string[] = [
+  "GET",
+  "POST",
+  "PUT",
+  "DELETE",
+  "PATCH",
+];

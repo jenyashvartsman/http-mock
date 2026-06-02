@@ -1,4 +1,9 @@
-import { DEFAULT_MOCK_DIR, DEFAULT_PORT, DEFAULT_PREFIX } from "../config/config";
+import {
+  DEFAULT_DELAY,
+  DEFAULT_MOCK_DIR,
+  DEFAULT_PORT,
+  DEFAULT_PREFIX,
+} from "../config/config";
 import { ServerOptions } from "../core/types";
 
 export interface ParsedArgs extends ServerOptions {
@@ -13,19 +18,24 @@ export function parseArgs(args: string[]): ParsedArgs {
     return parsed;
   }
 
-  const portIndex = args.indexOf("--port");
-  if (portIndex !== -1 && portIndex + 1 < args.length) {
-    parsed.port = parseInt(args[portIndex + 1], 10);
+  const port = extractArg(args, "--port");
+  if (port) {
+    parsed.port = parseInt(port, 10);
   }
 
-  const mockDirIndex = args.indexOf("--mock-dir");
-  if (mockDirIndex !== -1 && mockDirIndex + 1 < args.length) {
-    parsed.mockDir = args[mockDirIndex + 1];
+  const mockDir = extractArg(args, "--mock-dir");
+  if (mockDir) {
+    parsed.mockDir = mockDir;
   }
 
-  const prefixIndex = args.indexOf("--prefix");
-  if (prefixIndex !== -1 && prefixIndex + 1 < args.length) {
-    parsed.prefix = args[prefixIndex + 1];
+  const prefix = extractArg(args, "--prefix");
+  if (prefix) {
+    parsed.prefix = prefix;
+  }
+
+  const delay = extractArg(args, "--delay");
+  if (delay) {
+    parsed.delay = parseInt(delay, 10);
   }
 
   return parsed;
@@ -39,6 +49,15 @@ Options:
     --port <number>       Port to listen on (default: ${DEFAULT_PORT})
     --mock-dir <path>     Directory to load mock files from (default: "${DEFAULT_MOCK_DIR}")
     --prefix <string>     Optional prefix for all mock routes (default: "${DEFAULT_PREFIX || "(none)"}")
+    --delay <number>      Optional delay for responses in milliseconds (default: ${DEFAULT_DELAY})
     --help                Display this help message
   `);
+}
+
+function extractArg(args: string[], flag: string): string | undefined {
+  const index = args.indexOf(flag);
+  if (index !== -1 && index + 1 < args.length) {
+    return args[index + 1];
+  }
+  return undefined;
 }

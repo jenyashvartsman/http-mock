@@ -4,6 +4,7 @@ import { ServerOptions } from "./types";
 import { log, logRequest } from "./logger";
 import {
   APP_ROOT,
+  DEFAULT_DELAY,
   DEFAULT_MOCK_DIR,
   DEFAULT_PORT,
   DEFAULT_PREFIX,
@@ -23,6 +24,7 @@ export function createServer(options: ServerOptions = {}): void {
   const port = options.port ?? DEFAULT_PORT;
   const mockDir = options.mockDir ?? DEFAULT_MOCK_DIR;
   const prefix = options.prefix ?? DEFAULT_PREFIX;
+  const delay = options.delay ?? DEFAULT_DELAY;
 
   // collect all available mocks
   const availableMocks = collectMocks(prefix, path.join(APP_ROOT, mockDir));
@@ -53,7 +55,8 @@ export function createServer(options: ServerOptions = {}): void {
 
       try {
         const data = loadMockFile(mock.filePath);
-        sendResponse(res, 200, data);
+        const randDelay = Math.random() * (delay ?? DEFAULT_DELAY);
+        setTimeout(() => sendResponse(res, 200, data), randDelay);
       } catch (err) {
         log(`Error reading mock file "${mock.filePath}": ${err}`);
         sendResponse(res, 500, { error: "Failed to read mock file" });
@@ -62,16 +65,22 @@ export function createServer(options: ServerOptions = {}): void {
   );
 
   server.listen(port, () => {
-    logBanner(port, mockDir, prefix);
+    logBanner(port, mockDir, prefix, delay);
   });
 }
 
-function logBanner(port: number, mockDir: string, prefix: string): void {
+function logBanner(
+  port: number,
+  mockDir: string,
+  prefix: string,
+  delay: number,
+): void {
   const lines = [
     "Server running",
     `  URL:      http://localhost:${port}`,
     `  Mock dir: ${mockDir}`,
     `  Prefix:   ${prefix || "(none)"}`,
+    `  Delay:    0ms-${delay}ms`,
   ].join("\n");
   log(lines);
 }
