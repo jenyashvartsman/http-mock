@@ -3,18 +3,19 @@ import * as http from "http";
 import * as path from "path";
 import { InterceptorOptions, MockData } from "./interceptor.models";
 import { log, logRequest } from "../logger/logger";
-
-// Default configuration values
-const DEFAULT_PORT = 8080;
-const DEFAULT_MOCK_DIR = "mocks";
-const APP_ROOT = process.cwd();
-const RESPONSE_HEADERS = { "Content-Type": "application/json" };
+import {
+  DEFAULT_PORT,
+  DEFAULT_MOCK_DIR,
+  DEFAULT_PREFIX,
+  APP_ROOT,
+  RESPONSE_HEADERS,
+} from "../config/config";
 
 // Main function to create and start the HTTP interceptor server
 export function createInterceptor(options: InterceptorOptions = {}): void {
   const port = options.port ?? DEFAULT_PORT;
   const mockDir = options.mockDir ?? DEFAULT_MOCK_DIR;
-  const prefix = options.prefix ?? "";
+  const prefix = options.prefix ?? DEFAULT_PREFIX;
 
   // assemble available mocks and log them
   const availableMocks = collectMocks(prefix, path.join(APP_ROOT, mockDir));
