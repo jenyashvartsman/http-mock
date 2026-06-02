@@ -22,6 +22,13 @@ export function createInterceptor(
       const url = req.url ?? "";
       const method = req.method ?? "GET";
 
+      // Validate the HTTP method
+      if (!validateMethod(method)) {
+        res.writeHead(405, RESPONSE_HEADERS);
+        res.end(JSON.stringify({ error: "Method Not Allowed" }));
+        return;
+      }
+
       // Create the full path to the mock file based on the request URL and method
       const relativePath = createRelativePath(mockDir, method, url);
       const fullPath = path.join(APP_ROOT, relativePath);
@@ -75,4 +82,9 @@ function createRelativePath(
     ...url.split("/").filter(Boolean),
     `${method.toLowerCase()}.json`,
   );
+}
+
+function validateMethod(method: string): boolean {
+  const validMethods = ["GET", "POST", "PUT", "DELETE", "PATCH"];
+  return validMethods.includes(method.toUpperCase());
 }
