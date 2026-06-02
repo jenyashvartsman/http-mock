@@ -1,6 +1,7 @@
 export interface InterceptorOptions {
   port?: number;
   mockDir?: string;
+  prefix?: string;
 }
 
 export interface MockData {

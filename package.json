@@ -8,6 +8,10 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "dev:help": "tsx src/index.ts --help",
+    "dev:port:3000": "tsx src/index.ts --port 3000",
+    "dev:mocks:data": "tsx src/index.ts --mock-dir ./data",
+    "dev:prefix:api": "tsx src/index.ts --prefix /api",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

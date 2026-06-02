@@ -14,17 +14,11 @@ const RESPONSE_HEADERS = { "Content-Type": "application/json" };
 export function createInterceptor(options: InterceptorOptions = {}): void {
   const port = options.port ?? DEFAULT_PORT;
   const mockDir = options.mockDir ?? DEFAULT_MOCK_DIR;
+  const prefix = options.prefix ?? "";
 
   // assemble available mocks and log them
-  const availableMocks = collectMocks(path.join(APP_ROOT, mockDir));
-  log("Available mocks:");
-  if (availableMocks.length === 0) {
-    log("  No mock files found in the specified directory.");
-  } else {
-    availableMocks.forEach((mock) => {
-      log(`  ${mock.method} ${mock.route} -> ${mock.filePath}`);
-    });
-  }
+  const availableMocks = collectMocks(prefix, path.join(APP_ROOT, mockDir));
+  logAvailableMocks(availableMocks);
 
   // Create the HTTP server to intercept requests and serve mock data
   const server = http.createServer(
@@ -62,7 +56,7 @@ export function createInterceptor(options: InterceptorOptions = {}): void {
 
   // Start the server and log the listening address
   server.listen(port, () => {
-    log(`Listening on http://localhost:${port}`);
+    logAppBanner(port, mockDir, prefix);
   });
 }
 
@@ -118,6 +112,7 @@ function validateMethod(method: string): boolean {
 
 // Recursively collect mock data from the specified directory and return an array of MockData objects
 function collectMocks(
+  prefix: string,
   baseDir: string,
   currentDir: string = baseDir,
 ): MockData[] {
@@ -129,16 +124,43 @@ function collectMocks(
   for (const entry of entries) {
     const fullPath = path.join(currentDir, entry.name);
     if (entry.isDirectory()) {
-      results.push(...collectMocks(baseDir, fullPath));
+      results.push(...collectMocks(prefix, baseDir, fullPath));
     } else if (entry.isFile() && entry.name.endsWith(".json")) {
       const method = entry.name.replace(".json", "").toUpperCase();
       const relativePath = path.relative(baseDir, currentDir);
       const route = "/" + relativePath.split(path.sep).join("/");
-      results.push({ method, route, filePath: fullPath });
+      results.push({ method, route: prefix + route, filePath: fullPath });
     }
   }
 
   return results;
+}
+
+function logAvailableMocks(mocks: MockData[]): void {
+  if (mocks.length === 0) {
+    log("[http-mock] No mock files found in mock directory.");
+    return;
+  }
+  const methodWidth = Math.max(...mocks.map((m) => m.method.length));
+  const routeWidth = Math.max(...mocks.map((m) => m.route.length));
+  const lines = [
+    `${mocks.length} mock(s) loaded:`,
+    ...mocks.map(
+      (m) =>
+        `  ${m.method.padEnd(methodWidth + 2)}  ${m.route.padEnd(routeWidth + 4)} ${m.filePath}`,
+    ),
+  ];
+  log(lines.join("\n"));
+}
+
+function logAppBanner(port: number, mockDir: string, prefix: string): void {
+  const lines = [
+    `Server running`,
+    `  URL:      http://localhost:${port}`,
+    `  Mock dir: ${mockDir}`,
+    `  Prefix:   ${prefix || "(none)"}`,
+  ].join("\n");
+  log(lines);
 }
 
 // Send a JSON response with the specified status code and data
