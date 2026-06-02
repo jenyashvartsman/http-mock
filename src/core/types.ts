@@ -1,4 +1,4 @@
-export interface InterceptorOptions {
+export interface ServerOptions {
   port?: number;
   mockDir?: string;
   prefix?: string;
