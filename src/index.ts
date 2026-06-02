@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { parseArgs, printHelp } from "./cli/cli";
 import { createServer } from "./core/server";
 
