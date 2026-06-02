@@ -1,8 +1,8 @@
-import * as http from "http";
+export const logRequest = (method: string, url: string) => {
+  log(`${method} ${url}`);
+};
 
-export const logRequest = (req: http.IncomingMessage) => {
-  const method = req.method;
-  const url = req.url ?? "/";
+export const log = (message: string): void => {
   const currentTime = new Date().toISOString();
-  console.log(`[${currentTime}] ${method} ${url}`);
+  process.stdout.write(`[${currentTime}] ${message}\n`);
 };
