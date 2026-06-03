@@ -1,6 +1,6 @@
 {
   "name": "ui-http-mock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Mocking http calls for UI development",
   "license": "ISC",
   "author": "Jenya Shvartsman",
