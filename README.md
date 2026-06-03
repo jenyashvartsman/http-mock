@@ -4,11 +4,35 @@ A lightweight CLI tool for mocking HTTP API endpoints during UI development. Def
 
 ## Installation
 
+**Global** — run `ui-http-mock` from anywhere:
+
 ```bash
 npm install -g ui-http-mock
 ```
 
-Or use it without installing via `npx`:
+**Local (recommended)** — install as a dev dependency in your project:
+
+```bash
+npm install --save-dev ui-http-mock
+```
+
+Then add a script to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "mock": "ui-http-mock"
+  }
+}
+```
+
+Run it with:
+
+```bash
+npm run mock
+```
+
+**No install** — run once via `npx`:
 
 ```bash
 npx ui-http-mock
