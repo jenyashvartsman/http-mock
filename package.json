@@ -4,6 +4,10 @@
   "description": "Mocking http calls for UI development",
   "license": "ISC",
   "author": "Jenya Shvartsman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jenyashvartsman/http-mock.git"
+  },
   "type": "commonjs",
   "main": "dist/index.js",
   "bin": {
